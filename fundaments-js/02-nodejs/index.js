@@ -32,43 +32,72 @@ function getAddress(userId, callback) {
         number : 1000,
       })
     }, 2000)
+}
+
+
+main()
+async function main() {
+  try {
+  const user = await getUser()
+  // const tell = await getTel(user.id)
+  // const address = await getAddressAsync(user.id)
+
+  const result = await Promise.all([
+    getTel(user.id),
+    getAddressAsync(user.id)
+  ])
+
+  const address = result[1]
+  const tell = result[0]
+
+  console.log(`
+  Name: ${user.name}
+  Tell:(${tell.ddd}) ${tell.tel}
+  Address: ${address.address}, ${address.number}
+  `);
+    
+  } catch (error) {
+    console.error('Get bad',error);
   }
+}
 
-const userPromise = getUser()
 
-userPromise
-  .then((user) => {
-      return getTel(user.id)
-          .then((result) => {
-              return {
-                  user: {
-                    name: user.name,
-                    id: user.id
-                  },
-                  tell: result
-              }
-          })
-  })
-  .then((results) => {
-    const address = getAddressAsync(results.user.id)
-    return address.then((result) => {
-      return {
-        user : results.user,
-        tell: results.tell,
-        address: result,
-      }
-    })
-  })
-  .then((result) => {
-    console.log(`
-      Name: ${result.user.name}
-      Adress: ${result.address.address}, ${result.address.number}
-      Tell: (${result.tell.ddd}) ${result.tell.tel}
-    `);
-  })
-  .catch((error) => {
-    console.error('get bad', error)
-  })
+
+// const userPromise = getUser()
+
+// userPromise
+//   .then((user) => {
+//       return getTel(user.id)
+//           .then((result) => {
+//               return {
+//                   user: {
+//                     name: user.name,
+//                     id: user.id
+//                   },
+//                   tell: result
+//               }
+//           })
+//   })
+//   .then((results) => {
+//     const address = getAddressAsync(results.user.id)
+//     return address.then((result) => {
+//       return {
+//         user : results.user,
+//         tell: results.tell,
+//         address: result,
+//       }
+//     })
+//   })
+//   .then((result) => {
+//     console.log(`
+//       Name: ${result.user.name}
+//       Adress: ${result.address.address}, ${result.address.number}
+//       Tell: (${result.tell.ddd}) ${result.tell.tel}
+//     `);
+//   })
+//   .catch((error) => {
+//     console.error('get bad', error)
+//   })
 
 
 
