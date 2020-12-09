@@ -9,19 +9,27 @@ const DEFAULT_ITEM_REGISTER = {
     id: 1
 }
 
+const DEFAULT_ITEM_UPDATE = {
+    name: "Spider-man",
+    power: "Spider web",
+    id: 2
+
+}
+
 describe('Suite of heros manipulation', () => {
     before(async () => {
         await database.register(DEFAULT_ITEM_REGISTER)
+        await database.register(DEFAULT_ITEM_UPDATE)
     })
 
-    it('should be search a heros using archives',async() => {
+    it('should be to search and return heros',async() => {
         const expected = DEFAULT_ITEM_REGISTER
         const [result] = await database.list(expected.id)
 
         deepStrictEqual(result, expected)
     })
 
-    it('should register a hero, using archive', async() => {
+    it('should be able to register hero', async() => {
         const expect = DEFAULT_ITEM_REGISTER
         const result = await database.register(DEFAULT_ITEM_REGISTER)
         const [current] = await database.list(DEFAULT_ITEM_REGISTER.id)
@@ -33,5 +41,20 @@ describe('Suite of heros manipulation', () => {
         const expect = true;
         const result = await database.remove(DEFAULT_ITEM_REGISTER.id)
         deepStrictEqual(result, expect)
+    })
+
+    it('should be able to update hero', async () => {
+        const  expected = {
+            ...DEFAULT_ITEM_UPDATE,
+            name: 'Batman',
+            power: 'dark'
+        }
+        const newData = {
+            name: 'Batman',
+            power: 'dark'
+        }
+        await database.update(DEFAULT_ITEM_UPDATE.id, newData)
+        const [result] = await database.list(DEFAULT_ITEM_UPDATE.id)
+        deepStrictEqual(result, expected)
     })
 })
