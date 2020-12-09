@@ -35,7 +35,7 @@ describe('Star Wars tests', () => {
             .reply(200, response)
     })
 
-    it('should return the dr-d2 with right format', async () => {
+    it('should return the r2-d2 with right format', async () => {
         const expected = [{ nome: 'R2-D2', peso : '96'}]
         const baseName = `r2-d2`
         const result = await getPeople(baseName)

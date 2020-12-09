@@ -7,6 +7,9 @@
     "axios": "^0.21.0",
     "nock": "^13.0.5"
   },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  },
   "devDependencies": {
     "mocha": "^8.2.1"
   }
