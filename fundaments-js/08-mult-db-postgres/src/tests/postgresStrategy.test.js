@@ -6,7 +6,7 @@ const { userInfo } = require('os');
 
 const context = new Context(new Postgres())
 const MOCK_HERO_REGISTER = {
-    nome: "spider man",
+    name: "spider man",
     power: "Spider Web"
 }
 
@@ -24,5 +24,12 @@ describe('Postgres Strategy', () => {
         const result = await context.create(MOCK_HERO_REGISTER)
         delete result.id
         assert.strictEqual(result, MOCK_HERO_REGISTER)
+    })
+
+    it('list', async () => {
+        const [result] = await context.read({name : MOCK_HERO_REGISTER.name})
+        delete result.id
+
+        assert.deepStrictEqual(result, MOCK_HERO_REGISTER)
     })
 })
