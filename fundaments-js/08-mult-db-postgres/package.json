@@ -12,6 +12,6 @@
     "mocha": "^8.2.1"
   },
   "scripts": {
-    "test": "mocha -w  **/*.test.js"
+    "test": "mocha -w  src/tests/*.js"
   }
 }
