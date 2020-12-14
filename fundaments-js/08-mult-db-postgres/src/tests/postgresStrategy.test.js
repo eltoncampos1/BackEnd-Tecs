@@ -9,12 +9,17 @@ const MOCK_HERO_REGISTER = {
     name: "spider man",
     power: "Spider Web"
 }
+const MOCK_HERO_UPDATE = {
+    name: "Superman",
+    power: "Super force"
+}
 
 
 describe('Postgres Strategy', () => {
     this.timeout(Infinity)
     this.beforeAll(async () => {
         await context.connect()
+        await context.create(MOCK_HERO_UPDATE)
     })
     it('PostgresSQL Connections', async () => {
         const result = await context.isConnected()
@@ -31,5 +36,17 @@ describe('Postgres Strategy', () => {
         delete result.id
 
         assert.deepStrictEqual(result, MOCK_HERO_REGISTER)
+    })
+    it('update', async () => {
+        const [updateItem] = await context.read( {name:MOCK_HERO_UPDATE.name } )
+        const newItem = {
+            ...MOCK_HERO_UPDATE,
+            NAME : "WonderWoman"
+        }
+        const [result] = await context.update(updateItem.id, newItem)
+        const [itemUpdate] = await context.read( {id: newItem.id})
+        assert.deepStrictEqual(result, 1)
+        assert.deepStrictEqual(itemUpdate.name, updateItem.name)
+         
     })
 })
