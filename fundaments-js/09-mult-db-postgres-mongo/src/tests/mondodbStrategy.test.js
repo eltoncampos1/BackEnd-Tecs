@@ -20,7 +20,7 @@ describe('MongoDB tests suite', function () {
     })
 
     it('resgister', async () => {
-        const { name, power } = context.create(MOCK_HERO_RESGISTER)
+        const { name, power } = await context.create(MOCK_HERO_RESGISTER)
         assert.deepStrictEqual({name, power}, MOCK_HERO_RESGISTER)
     })
 })
