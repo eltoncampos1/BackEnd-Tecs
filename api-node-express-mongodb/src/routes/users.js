@@ -4,10 +4,12 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const Users = require('../models/user');
+const jwt = require('../config/config');
+const config = require('../config/config');
 
 
 const createUserToken = (userId) => {
-    return jwt.sign({ id: userId}, 'supersenhafodasecretangmvaiimaginarisso', { expiresIn: '7d'});
+    return jwt.sign({ id: userId},config.jwt_pass, {expiresIn: config.jwt_expiresIn});
 }
 
 

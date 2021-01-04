@@ -1,9 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
-
 const bodyParser = require('body-parser');
 
-const url = 'mongodb+srv://user_admin:SelX2rsUhtDG7uMU@clusterapi.le3eg.mongodb.net/mongodb?retryWrites=true&w=majority';
+const config = require('./config/config');
+
+
+const url = config.bd_string;
 const options = { reconnectTries: Number.MAX_VALUE, reconnectInterval: 500, poolSize: 5, useNewUrlParser: true };
 
 

@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const config = require('../config/config');
+
 
 const auth = (request, response, next) => {
     const token_header = request.headers.auth;
@@ -7,7 +9,7 @@ const auth = (request, response, next) => {
         return response.status(401).send({ error: "unauthenticated user"});
     };
 
-    jwt.verify(token_header, 'supersenhafodasecretangmvaiimaginarisso', (err,decoded) => {
+    jwt.verify(token_header, config.jwt_pass, (err,decoded) => {
         if(err) {
             return response.status(401).send({ error: "Invalid Token"});
         };
