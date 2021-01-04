@@ -18,7 +18,7 @@ router.get('/', async (request, response) => {
     return response.send(users);
 
    } catch (error) {
-        return response.send({ error: "error in user consultation!"});
+        return response.status(500).send({ error: "error in user consultation!"});
    }
 });
 
@@ -26,20 +26,20 @@ router.post('/create', async (request,response) => {
     const { email, password } = request.body;
 
     if (!email || !password) {
-        return response.send({ error: "insufficient data"});
+        return response.status(400).send({ error: "insufficient data"});
     };
 
     try {
         if (await Users.findOne({email})) {
-            return response.send({ error: "User already registered"});
+            return response.status(400).send({ error: "User already registered"});
         }
 
         const user = await Users.create(request.body);
         user.password = undefined;
-        return response.send({user, token: createUserToken(user.id)});
+        return response.status(201).send({user, token: createUserToken(user.id)});
 
     } catch (error) {
-        return response.send({error: " Error to find user!"});
+        return response.status(500).send({error: " Error to find user!"});
     }
 });
 
@@ -47,20 +47,20 @@ router.post('/auth', async  (request,response) => {
     const {email, password} = request.body;
 
     if(!email || !password) {
-        return response.send({ error: "insufficient data"});
+        return response.status(400).send({ error: "insufficient data"});
     };
 
     try {
         const user = await Users.findOne({ email }).select('+password');
 
         if(!user) {
-            return response.send({ error: "unregistered user"});
+            return response.status(400).send({ error: "unregistered user"});
         }
 
         const passwordAtuthentication = await bcrypt.compare(password, user.password);
 
         if(!passwordAtuthentication) {
-            return response.send({ error: "error to authenticating user"});
+            return response.status(401).send({ error: "error to authenticating user"});
         }
 
         user.password = undefined;
@@ -68,7 +68,7 @@ router.post('/auth', async  (request,response) => {
         return response.send({user, token: createUserToken(user.id)});
 
     } catch (error) {
-        return response.send({ error: "error to get user"});
+        return response.status(500).send({ error: "error to get user"});
     }  
 });
 
