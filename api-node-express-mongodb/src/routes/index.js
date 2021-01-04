@@ -1,9 +1,10 @@
 const express = require('express');
-
+const auth = require('../middlewares/auth');
 
 const router = express.Router();
 
-router.get('/', (request, response) => {
+router.get('/', auth, (request, response) => {
+    console.log(response.locals.auth_data);
     return response.send({ message: "OK GET INDEX"});
 });
 

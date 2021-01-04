@@ -1,10 +1,15 @@
 const express = require('express');
 const router = express.Router();
-
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-
 const Users = require('../models/user');
+
+
+const createUserToken = (userId) => {
+    return jwt.sign({ id: userId}, 'supersenhafodasecretangmvaiimaginarisso', { expiresIn: '7d'});
+}
+
 
 router.get('/', async (request, response) => {
    try { 
@@ -31,7 +36,7 @@ router.post('/create', async (request,response) => {
 
         const user = await Users.create(request.body);
         user.password = undefined;
-        return response.send(user);
+        return response.send({user, token: createUserToken(user.id)});
 
     } catch (error) {
         return response.send({error: " Error to find user!"});
@@ -60,7 +65,7 @@ router.post('/auth', async  (request,response) => {
 
         user.password = undefined;
 
-        return response.send(user);
+        return response.send({user, token: createUserToken(user.id)});
 
     } catch (error) {
         return response.send({ error: "error to get user"});
