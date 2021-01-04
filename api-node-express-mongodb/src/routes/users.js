@@ -6,70 +6,65 @@ const bcrypt = require('bcrypt');
 
 const Users = require('../models/user');
 
-router.get('/', (request, response) => {
-    Users.find({},(err, data) => {
-        if(err) {
-            return response.send({ error: "error in user consultation!"});
-        }
+router.get('/', async (request, response) => {
+   try { 
+    const users = await Users.find({});
 
-        return response.send(data);
-    })
+    return response.send(users);
+
+   } catch (error) {
+        return response.send({ error: "error in user consultation!"});
+   }
 });
 
-router.post('/create', (request,response) => {
+router.post('/create', async (request,response) => {
     const { email, password } = request.body;
 
     if (!email || !password) {
         return response.send({ error: "insufficient data"});
-    }
+    };
 
-    Users.findOne({email}, (err, data) => {
-        if(err) {
-            return response.send({error: " Error to find user!"});
-        }
-
-        if (data) {
+    try {
+        if (await Users.findOne({email})) {
             return response.send({ error: "User already registered"});
         }
 
-        Users.create(request.body, (err,data) => {
-            if(err) {
-                return response.send({error: " Error to create user!"});
-            }
+        const user = await Users.create(request.body);
+        user.password = undefined;
+        return response.send(user);
 
-            data.password = undefined;
-
-            return response.send(data);
-        });
-    });
+    } catch (error) {
+        return response.send({error: " Error to find user!"});
+    }
 });
 
-router.post('/auth', (request,response) => {
+router.post('/auth', async  (request,response) => {
     const {email, password} = request.body;
 
     if(!email || !password) {
         return response.send({ error: "insufficient data"});
-    }
+    };
 
-    Users.findOne({email}, (err, data) => {
-        if(err) {
-        return response.send({ error: "error to get user"});
-        }
+    try {
+        const user = await Users.findOne({ email }).select('+password');
 
-        if(!data) {
+        if(!user) {
             return response.send({ error: "unregistered user"});
         }
 
-        bcrypt.compare(password, data.password, (err,same) => {
-            if(!same) {
-                return response.send({ error: "error to authenticating user"});
-            }
+        const passwordAtuthentication = await bcrypt.compare(password, user.password);
 
-            data.password = undefined;
+        if(!passwordAtuthentication) {
+            return response.send({ error: "error to authenticating user"});
+        }
 
-            return response.send(data);
-        });
-    }).select('+password');
+        user.password = undefined;
+
+        return response.send(user);
+
+    } catch (error) {
+        return response.send({ error: "error to get user"});
+    }  
 });
 
 module.exports = router;
